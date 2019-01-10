@@ -37,8 +37,8 @@ rustPlatform.buildRustPackage rec {
       mv -nt "$lib" "$out"/env
     fi
 
-    mkdir -p "$man/man/man1"
-    cp man/xcolor.1 "$man/man/man1/"
+    mkdir -p "$man/share/man/man1"
+    cp man/xcolor.1 "$man/share/man/man1/"
     mkdir -p "$bin/share/"{bash-completion/completions,fish/vendor_completions.d,zsh/site-functions}
     cp target/release/build/xcolor-*/out/xcolor.bash "$bin/share/bash-completion/completions/"
     cp target/release/build/xcolor-*/out/xcolor.fish "$bin/share/fish/vendor_completions.d/"
