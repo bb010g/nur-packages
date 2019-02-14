@@ -1,6 +1,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
-{
+let
+  gobject-introspection = pkgs: pkgs.gobject-introspection or pkgs.gobjectIntrospection;
+in {
   lib = import ./lib { inherit pkgs; }; # functions
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays

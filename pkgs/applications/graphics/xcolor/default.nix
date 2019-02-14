@@ -1,6 +1,7 @@
-{ stdenv, fetchFromGitHub, rustPlatform
+{ stdenv, rustPlatform, fetchFromGitHub
 , libxcb
-, pkgconfig, python3 }:
+, pkgconfig, python3
+}:
 
 rustPlatform.buildRustPackage rec {
   name = "xcolor-${version}";
@@ -20,36 +21,43 @@ rustPlatform.buildRustPackage rec {
   nativeBuildInputs = [ pkgconfig python3 ];
   buildInputs = [ libxcb ];
 
-  preFixup = ''
-    # move buildRustCrate outputs to proper split locations
-    shopt -s dotglob
-    if [[ -d "$out/bin" ]]; then
-      mkdir -p "$bin/bin"
-      mv -nt "$bin"/bin "$out"/bin/*
-      rmdir "$out/bin"
-    fi
-    if [[ -d "$out/lib" ]]; then
-      mkdir -p "$lib/lib"
-      mv -nt "$lib"/lib "$out"/lib/*
-      rmdir "$out/lib"
-    fi
-    if [[ -s "$out/env" ]]; then
-      mv -nt "$lib" "$out"/env
-    fi
+  postPatch = let makefileSedScript = ''
+    /^install:/{s#target/release/[^ ]\+##g};
+    #install .* -- target/release/\([^ ]\+\) ".*bin/\1"$#{d}
+  ''; in ''
+    # don't make install binaries or libraries
+    sed -i ${stdenv.lib.escapeShellArg makefileSedScript} Makefile
+  '';
 
-    mkdir -p "$man/share/man/man1"
-    cp man/xcolor.1 "$man/share/man/man1/"
-    mkdir -p "$bin/share/"{bash-completion/completions,fish/vendor_completions.d,zsh/site-functions}
-    cp target/release/build/xcolor-*/out/xcolor.bash "$bin/share/bash-completion/completions/"
-    cp target/release/build/xcolor-*/out/xcolor.fish "$bin/share/fish/vendor_completions.d/"
-    cp target/release/build/xcolor-*/out/_xcolor "$bin/share/zsh/site-functions/"
+  makeFlags = [ "PREFIX=$(bin)" ];
+
+  postInstall = ''
+    # fix buildRustPackage installPhase locations
+    moveToOutput bin "''${!outputBin}"
+    moveToOutput lib "''${!outputLib}"
+
+    # Old bash empty array hack
+    # shellcheck disable=SC2086
+    local flagsArray=(
+        $makeFlags ''${makeFlagsArray+"''${makeFlagsArray[@]}"}
+        $installFlags ''${installFlagsArray+"''${installFlagsArray[@]}"}
+        ''${installTargets:-install}
+    )
+
+    echoCmd 'install flags' "''${flagsArray[@]}"
+    make ''${makefile:+-f $makefile} "''${flagsArray[@]}"
+    unset flagsArray
   '';
 
   meta = with stdenv.lib; {
     description = "Lightweight color picker for X11";
-    homepage = https://github.com/Soft/xcolor;
-    license = with licenses; [ mit ];
+    longDescription = ''
+      Lightweight color picker for X11. Use your mouse to select colors visible
+      anywhere on the screen to get their RGB representation.
+    '';
+    homepage = https://soft.github.io/xcolor;
+    license = with licenses; mit;
     maintainers = with maintainers; [ bb010g ];
-    platforms = platforms.all;
+    platforms = platforms.unix;
   };
 }
