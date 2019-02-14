@@ -7,6 +7,10 @@ in {
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
+  beets = pkgs.callPackage ./pkgs/tools/audio/beets {
+    pythonPackages = pkgs.python3Packages;
+    gobject-introspection = gobject-introspection pkgs;
+  };
   dwdiff = pkgs.callPackage ./pkgs/tools/text/dwdiff { };
   ipscan = pkgs.callPackage ./pkgs/applications/networking/ipscan { };
   just = pkgs.callPackage ./pkgs/development/tools/build-managers/just {  };
