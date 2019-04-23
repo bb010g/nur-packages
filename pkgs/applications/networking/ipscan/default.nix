@@ -22,7 +22,6 @@ let
     platforms = platforms.all;
   };
 
-
   src = fetchFromGitHub {
     owner = "angryip";
     repo = "ipscan";
@@ -145,6 +144,8 @@ in stdenv.mkDerivation {
   patches = [
     ./rt-jar-detection.patch
   ];
+
+  LANG = "${if stdenv.isDarwin then "en_US" else "C"}.UTF-8";
 
   # TODO package Java Native Access (JNA) in Nixpkgs & ln -sf in here
   postPatch = ''

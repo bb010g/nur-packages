@@ -3,4 +3,8 @@
 , gdb, sudo
 }:
 
-
+buildPythonApplication rec {
+  pname = "pince";
+  version = "";
+  format = "other";
+}

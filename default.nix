@@ -5,27 +5,30 @@ rec {
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
-  # applications
+  # # applications
 
-  ## applications.graphics
+  # ## applications.graphics
 
   xcolor = pkgs.callPackage ./pkgs/applications/graphics/xcolor { };
 
-  ## applications.networking
+  # ### applications.networking
 
-  ipscan = pkgs.callPackage ./pkgs/applications/networking/ipscan {
+  ipscan = (pkgs.callPackage ./pkgs/applications/networking/ipscan {
     swt = swt_4_6;
-  };
+  }).overrideAttrs (o: {
+    meta = if !(swt_4_6.meta.broken or false) then o.meta else
+      o.meta // { broken = true; };
+  });
 
-  # development
+  # # development
 
-  ## development.build-managers
+  # ## development.build-managers
 
   just = pkgs.callPackage ./pkgs/development/tools/build-managers/just { };
 
-  ## development.libraries
+  # ## development.libraries
 
-  ### development.libraries.java
+  # ### development.libraries.java
 
   swt_4_6 = pkgs.swt.overrideAttrs (o: let
     inherit (pkgs) fetchzip stdenv;
@@ -64,9 +67,11 @@ rec {
         mv "$unpackDir" "$out"
       '';
     };
+
+    meta = if o ? pname then o.meta else (o.meta // { broken = true; });
   });
 
-  ## development.python-modules
+  # ## development.python-modules
 
   pythonPackageOverrides = self: super: {
     namedlist = super.namedList or
@@ -78,26 +83,30 @@ rec {
     packageOverrides = pythonPackageOverrides;
   }).pkgs.wpull;
 
-  ## development.tools
+  # ## development.tools
 
-  ### development.tools.misc
+  # ### development.tools.misc
 
   # pince = pkgs.callPackage ./pkgs/development/tools/misc/pince { };
 
-  # tools
+  # # tools
 
-  ## tools.compression
+  # ## tools.compression
 
   lz4json = pkgs.callPackage ./pkgs/tools/compression/lz4json { };
 
   mozlz4-tool = pkgs.callPackage ./pkgs/tools/compression/mozlz4-tool { };
 
-  ## tools.security
+  # ## tools.misc
+
+  lorri = pkgs.callPackage ./pkgs/tools/misc/lorri { };
+
+  # ## tools.security
 
   # bitwarden-desktop =
   #   pkgs.callPackage ./pkgs/tools/security/bitwarden/desktop { };
 
-  ## tools.text
+  # ## tools.text
 
   dwdiff = pkgs.callPackage ./pkgs/tools/text/dwdiff { };
   ydiff = pkgs.pythonPackages.callPackage ./pkgs/tools/text/ydiff { };
