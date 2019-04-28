@@ -95,7 +95,6 @@ let
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
     outputHash = "0zlgz6z7iw0p6jikcl0149pf11s1qa6xcw2q4jfcaklskpw84149";
-    # outputHash = stdenv.lib.fakeSha256;
   };
 
   hostPkgDeps = {
