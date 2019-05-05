@@ -64,8 +64,11 @@ in rec {
 
   # ### applications.networking.p2p
 
-  receptor-unstable =
-    pkgs.callPackage ./pkgs/applications/networking/p2p/receptor { };
+  broca-unstable = pkgs.python3Packages.callPackage
+    ./pkgs/applications/networking/p2p/broca { };
+
+  receptor-unstable = pkgs.callPackage
+    ./pkgs/applications/networking/p2p/receptor { };
 
   synapse-bt = breakIf' (cargoVendorTooOld pkgs.cargo-vendor)
     (pkgs.callPackage ./pkgs/applications/networking/p2p/synapse-bt {
