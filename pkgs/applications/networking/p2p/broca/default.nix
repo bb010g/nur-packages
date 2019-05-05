@@ -25,7 +25,7 @@ buildPythonApplication rec {
     sed -i setup.py \
       -e $'/install_requires = \\[\'srht\', \'flask-login\'\\]/d'
     substituteInPlace broca-daemon \
-      --replace '[ "broca.ini"' '[ "~/.config/broca/broca.ini", "broca.ini"'
+      --replace '[ "broca.ini"' '[ "~/.config/broca.ini", "broca.ini"'
   '';
 
   meta = with stdenv.lib; {
