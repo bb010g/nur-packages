@@ -122,7 +122,12 @@ in rec {
     meta = if o ? pname then o.meta else (o.meta // { broken = true; });
   });
 
-  libvitamtp = libvitamtp-yifanlu;
+  libvitamtp = libvitamtp-codestation;
+
+  # ### development.libraries.libvitamtp
+
+  libvitamtp-codestation = pkgs.callPackage
+    ./pkgs/development/libraries/libvitamtp/codestation.nix { };
 
   # ### development.libraries.libvitamtp.yifanlu
 
