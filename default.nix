@@ -177,6 +177,11 @@ in rec {
 
   lorri = lorri-rolling;
 
+  psvimgtools = pkgs.callPackage ./pkgs/tools/misc/psvimgtools { };
+  # TODO: needs arm-vita-eabi host
+  # psvimgtools-dump_partials = pkgs.callPackage
+  #   ./pkgs/tools/misc/psvimgtools/dump_partials.nix { };
+
   # ### tools.misc.lorri
 
   lorri-rolling = breakIf' (cargoVendorTooOld pkgs.cargo-vendor)
