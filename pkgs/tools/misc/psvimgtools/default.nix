@@ -16,10 +16,6 @@ in stdenv.mkDerivation rec {
     sha256 = "119bka85cl8kkl18pvp0r5mywwsfnkppr89936abx5pmvk7sv869";
   };
 
-  postPatch = ''
-    echo $'\nadd_subdirectory(dump_partials)' >> CMakeLists.txt
-  '';
-
   nativeBuildInputs = [
     buildPackages.cmake
   ];
