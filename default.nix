@@ -29,6 +29,13 @@ in rec {
 
   # ## applications.misc
 
+  qcma = pkgs.libsForQt5.callPackage ./pkgs/applications/misc/qcma {
+    inherit libvitamtp;
+    buildPackages = pkgs.buildPackages.libsForQt5.callPackage ({
+      pkgconfig, qmake, qttools
+    } @ args: args) { };
+  };
+
   st-bb010g-unstable = ((st-unstable.overrideAttrs (o: rec {
     name = "${pname}-${version}";
     pname = "st-bb010g-unstable";
