@@ -12,7 +12,7 @@ in stdenv.mkDerivation rec {
     owner = "yifanlu";
     repo = "psvimgtools";
     # rev = "v${version}";
-    rev = "v0.1.0";
+    rev = "v0.1";
     sha256 = "119bka85cl8kkl18pvp0r5mywwsfnkppr89936abx5pmvk7sv869";
   };
 
