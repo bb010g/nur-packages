@@ -122,6 +122,18 @@ in rec {
     meta = if o ? pname then o.meta else (o.meta // { broken = true; });
   });
 
+  libvitamtp = libvitamtp-yifanlu;
+
+  # ### development.libraries.libvitamtp.yifanlu
+
+  libvitamtp-yifanlu = libvitamtp-yifanlu-stable;
+
+  libvitamtp-yifanlu-stable = pkgs.callPackage
+    ./pkgs/development/libraries/libvitamtp/yifanlu/stable.nix { };
+
+  libvitamtp-yifanlu-unstable = pkgs.callPackage
+    ./pkgs/development/libraries/libvitamtp/yifanlu/unstable.nix { };
+
   # ## development.python-modules
 
   pythonPackageOverrides = self: super: {
