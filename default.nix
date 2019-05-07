@@ -151,8 +151,14 @@ in rec {
 
   # ## tools.misc
 
-  lorri = breakIf' (cargoVendorTooOld pkgs.cargo-vendor)
-    (pkgs.callPackage ./pkgs/tools/misc/lorri { });
+  lorri = lorri-rolling;
+
+  # ### tools.misc.lorri
+
+  lorri-rolling = breakIf' (cargoVendorTooOld pkgs.cargo-vendor)
+    (pkgs.callPackage ./pkgs/tools/misc/lorri/rolling.nix { });
+  lorri-unstable = breakIf' (cargoVendorTooOld pkgs.cargo-vendor)
+    (pkgs.callPackage ./pkgs/tools/misc/lorri/unstable.nix { });
 
   # ## tools.networking
 
@@ -170,8 +176,8 @@ in rec {
 
   # ## tools.security
 
-  # bitwarden-desktop =
-  #   pkgs.callPackage ./pkgs/tools/security/bitwarden/desktop { };
+  # bitwarden-desktop = pkgs.callPackage
+  #   ./pkgs/tools/security/bitwarden/desktop { };
 
   # ## tools.text
 
