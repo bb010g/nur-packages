@@ -1,5 +1,5 @@
-{ stdenv, rustPlatform
-, darwin ? null, nix
+{ stdenv, rustPlatform, callPackage
+, darwin ? null, direnv, nix, which
 , pname ? "lorri", version, src, cargoSha256
 }:
 
@@ -12,7 +12,11 @@ in rustPlatform.buildRustPackage rec {
 
   inherit cargoSha256;
 
-  buildInputs = [ nix ] ++ optionals stdenv.hostPlatform.isDarwin [
+  buildInputs = [
+    direnv
+    nix
+    which
+  ] ++ optionals stdenv.hostPlatform.isDarwin [
     darwin.cf-private
     darwin.security
     darwin.apple_sdk.frameworks.CoreServices
@@ -22,6 +26,19 @@ in rustPlatform.buildRustPackage rec {
 
   BUILD_REV_COUNT = src.revCount or 1;
   NIX_PATH = "nixpkgs=${src + "/nix/bogus-nixpkgs"}";
+  RUN_TIME_CLOSURE = callPackage (src + "/nix/runtime.nix") {};
+  USER = "bogus";
+
+  preConfigure = ''
+    source ${src + "/nix/pre-check.sh"}
+
+    # Do an immediate, light-weight test to ensure logged-evaluation
+    # is valid, prior to doing expensive compilations.
+    nix-build --show-trace ./src/logged-evaluation.nix \
+      --arg src ./tests/direnv/basic/shell.nix \
+      --arg runTimeClosure "$RUN_TIME_CLOSURE" \
+      --no-out-link
+  '';
 
   meta = with stdenv.lib; {
     description = "Your project's nix-env";
