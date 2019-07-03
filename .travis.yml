@@ -25,7 +25,9 @@ script:
   while IFS= read -r drv; do
     nix-build "$drv" --show-trace | \
       if [ -n "${CACHIX_CACHE}" ]; then cachix push "${CACHIX_CACHE}"; fi
-  done < <("$(nix-build ./default.nix -A nur-ci-helper)/bin/nur-ci-helper" \
+  done < <("$( \
+        nix-build ./default.nix -A nur-ci-helper --no-out-link \
+      )/bin/nur-ci-helper" \
     ./ci.nix -A cacheOutputs)
 - nix-build ./ci.nix -A buildOutputs
 - nix eval -f ./default.nix 'lib'

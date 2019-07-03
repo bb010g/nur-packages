@@ -1,7 +1,15 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs> { }, lib ? pkgs.lib
+, ciHelperPkgs ?
+  import (builtins.fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs/archive/" +
+      "7815c86c104a99417db844791dcda34fe7a7965f.tar.gz";
+    sha256 = "0k6ws2b2b6vrvq2g5h8fi8qscb0wk0wy097cnf36f9acd126k43j";
+  }) { }
+}:
 
 let
-  inherit (pkgs.lib) versionOlder;
+  lib' = lib;
+  inherit (lib') versionOlder;
   applyIf = f: p: x: if p x then f x else x;
   applyIf' = f: p: x: if p then f x else x;
 
@@ -10,13 +18,13 @@ let
   breakIf' = applyIf' break;
 
   min-cargo-vendor = "0.1.23";
-  packageOlder = p: v: versionOlder (pkgs.lib.getVersion p) v;
+  packageOlder = p: v: versionOlder (lib'.getVersion p) v;
   cargoVendorTooOld = cargo-vendor: packageOlder cargo-vendor min-cargo-vendor;
   needsNewCargoVendor = p: breakIf' (cargoVendorTooOld p);
   needsNewCargoVendor' = needsNewCargoVendor pkgs.cargo-vendor;
 
   baseNameOf' = p: let p' = builtins.baseNameOf p; in
-    if pkgs.lib.isStorePath p then (builtins.substring 32 (-1) p') else p';
+    if lib'.isStorePath p then (builtins.substring 32 (-1) p') else p';
 in rec {
   lib = import ./lib { inherit pkgs; }; # functions
   modules = import ./modules; # NixOS modules
@@ -49,7 +57,7 @@ in rec {
     pname = "st-bb010g-unstable";
     version = "2019-05-04";
   })).override {
-    conf = pkgs.lib.readFile ./pkgs/applications/misc/st/config.h;
+    conf = lib'.readFile ./pkgs/applications/misc/st/config.h;
     patches = [
       ./pkgs/applications/misc/st/bold-is-not-bright.diff
       ./pkgs/applications/misc/st/scrollback.diff
@@ -194,7 +202,7 @@ in rec {
 
   lorri = lorri-rolling;
 
-  nur-ci-helper = (pkgs.haskellPackages.override {
+  nur-ci-helper = let pkgs = ciHelperPkgs; in (pkgs.haskellPackages.override {
     overrides = self: super: {
       pangraph = pkgs.haskell.lib.overrideCabal super.pangraph (drv: {
         version = "0.3.0";
@@ -247,4 +255,4 @@ in rec {
   ydiff = pkgs.pythonPackages.callPackage ./pkgs/tools/text/ydiff { };
 }
 
-# vim:et:sw=2
+# vim:et:sw=2:tw=78
