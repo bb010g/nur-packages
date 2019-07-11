@@ -4,10 +4,10 @@ let
 
   trace = args.trace or
     # builtins.trace;
-    (x: x);
+    (_: x: x);
   traceVal = args.traceVal or
     # lib.traceVal;
-    (x: x);
+    (_: x: x);
 
   cfg = config.programs.pijul;
 
