@@ -8,8 +8,7 @@
 }:
 
 let
-  lib' = lib;
-  inherit (lib') versionOlder;
+  inherit (lib) versionOlder;
   applyIf = f: p: x: if p x then f x else x;
   applyIf' = f: p: x: if p then f x else x;
 
@@ -18,13 +17,13 @@ let
   breakIf' = applyIf' break;
 
   min-cargo-vendor = "0.1.23";
-  packageOlder = p: v: versionOlder (lib'.getVersion p) v;
+  packageOlder = p: v: versionOlder (lib.getVersion p) v;
   cargoVendorTooOld = cargo-vendor: packageOlder cargo-vendor min-cargo-vendor;
   needsNewCargoVendor = p: breakIf' (cargoVendorTooOld p);
   needsNewCargoVendor' = needsNewCargoVendor pkgs.cargo-vendor;
 
   baseNameOf' = p: let p' = builtins.baseNameOf p; in
-    if lib'.isStorePath p then (builtins.substring 32 (-1) p') else p';
+    if lib.isStorePath p then (builtins.substring 32 (-1) p') else p';
 in rec {
   lib = import ./lib { inherit pkgs; }; # functions
   modules = import ./modules; # NixOS modules
@@ -57,7 +56,7 @@ in rec {
     pname = "st-bb010g-unstable";
     version = "2019-05-04";
   })).override {
-    conf = lib'.readFile ./pkgs/applications/misc/st/config.h;
+    conf = lib.readFile ./pkgs/applications/misc/st/config.h;
     patches = [
       ./pkgs/applications/misc/st/bold-is-not-bright.diff
       ./pkgs/applications/misc/st/scrollback.diff
@@ -199,6 +198,8 @@ in rec {
     ./pkgs/tools/compression/vita-pkg2zip/unstable.nix { };
 
   # ## tools.misc
+
+  gallery-dl = pkgs.callPackage ./pkgs/tools/misc/gallery-dl { };
 
   lorri = lorri-rolling;
 
