@@ -8,7 +8,8 @@
 }:
 
 let
-  inherit (lib) versionOlder;
+  pkgsLib = lib;
+  inherit (pkgsLib) versionOlder;
   applyIf = f: p: x: if p x then f x else x;
   applyIf' = f: p: x: if p then f x else x;
 
@@ -17,13 +18,13 @@ let
   breakIf' = applyIf' break;
 
   min-cargo-vendor = "0.1.23";
-  packageOlder = p: v: versionOlder (lib.getVersion p) v;
+  packageOlder = p: v: versionOlder (pkgsLib.getVersion p) v;
   cargoVendorTooOld = cargo-vendor: packageOlder cargo-vendor min-cargo-vendor;
   needsNewCargoVendor = p: breakIf' (cargoVendorTooOld p);
   needsNewCargoVendor' = needsNewCargoVendor pkgs.cargo-vendor;
 
   baseNameOf' = p: let p' = builtins.baseNameOf p; in
-    if lib.isStorePath p then (builtins.substring 32 (-1) p') else p';
+    if pkgsLib.isStorePath p then (builtins.substring 32 (-1) p') else p';
 in rec {
   lib = import ./lib { inherit pkgs; }; # functions
   modules = import ./modules; # NixOS modules
@@ -56,7 +57,7 @@ in rec {
     pname = "st-bb010g-unstable";
     version = "2019-05-04";
   })).override {
-    conf = lib.readFile ./pkgs/applications/misc/st/config.h;
+    conf = pkgsLib.readFile ./pkgs/applications/misc/st/config.h;
     patches = [
       ./pkgs/applications/misc/st/bold-is-not-bright.diff
       ./pkgs/applications/misc/st/scrollback.diff
@@ -178,6 +179,10 @@ in rec {
   # ### development.tools.misc
 
   # pince = pkgs.callPackage ./pkgs/development/tools/misc/pince { };
+
+  # servers
+
+  ttyd = pkgs.callPackage ./pkgs/servers/ttyd { };
 
   # # tools
 
