@@ -90,13 +90,8 @@ in rec {
   broca-unstable = pkgs.python3Packages.callPackage
     ./pkgs/applications/networking/p2p/broca { };
 
-  receptor-unstable = pkgs.callPackage
-    ./pkgs/applications/networking/p2p/receptor { };
-
-  synapse-bt = needsNewCargoVendor'
-    (pkgs.callPackage ./pkgs/applications/networking/p2p/synapse-bt {
-      inherit (pkgs.darwin.apple_sdk.frameworks) Security;
-    });
+  receptor-unstable = break (pkgs.callPackage
+    ./pkgs/applications/networking/p2p/receptor { });
 
   # # development
 
