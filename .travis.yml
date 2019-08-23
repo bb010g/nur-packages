@@ -21,9 +21,10 @@ install:
 - travis_retry nix-channel --update
 
 script:
-- >
+- |
   while IFS= read -r drv; do
-    nix-build "$drv" --show-trace | \
+    printf '%s\n' "building $drv (all outputs if possible)"
+    nix-build --argstr drv "$drv" -E '{drv}: let d = import drv; in d.all or d' --show-trace | \
       if [ -n "${CACHIX_CACHE}" ]; then cachix push "${CACHIX_CACHE}"; fi
   done < <("$( \
         nix-build ./default.nix -A nur-ci-helper --no-out-link \
