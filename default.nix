@@ -93,6 +93,13 @@ in rec {
   receptor-unstable = break (pkgs.callPackage
     ./pkgs/applications/networking/p2p/receptor { });
 
+  # ## applications.version-management
+
+  # ### applications.version-management.git-and-tools
+
+  git-revise = pkgs.python3Packages.callPackage
+    ./pkgs/applications/version-management/git-and-tools/git-revise { };
+
   # # development
 
   # ## development.libraries
@@ -262,5 +269,3 @@ in rec {
   dwdiff = pkgs.callPackage ./pkgs/tools/text/dwdiff { };
   ydiff = pkgs.pythonPackages.callPackage ./pkgs/tools/text/ydiff { };
 }
-
-# vim:et:sw=2:tw=78

@@ -104,5 +104,3 @@ in
     in trace "pijul config.toml" (lib.concatStringsSep "\n" configs));
   });
 }
-
-# vim:et:sw=2:tw=78

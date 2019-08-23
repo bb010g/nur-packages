@@ -64,5 +64,3 @@ pyPkgs.buildPythonApplication rec {
     maintainers = with lib.maintainers; [ bb010g ];
   };
 }
-
-# vim:et:sw=2:tw=78
