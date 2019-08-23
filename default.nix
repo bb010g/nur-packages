@@ -1,11 +1,4 @@
-{ pkgs ? import <nixpkgs> { }, lib ? pkgs.lib
-, ciHelperPkgs ?
-  import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/" +
-      "7815c86c104a99417db844791dcda34fe7a7965f.tar.gz";
-    sha256 = "0k6ws2b2b6vrvq2g5h8fi8qscb0wk0wy097cnf36f9acd126k43j";
-  }) { }
-}:
+{ pkgs ? import <nixpkgs> { }, lib ? pkgs.lib }:
 
 let
   pkgsLib = lib;
@@ -209,22 +202,6 @@ in rec {
   gallery-dl = pkgs.callPackage ./pkgs/tools/misc/gallery-dl { };
 
   lorri = lorri-rolling;
-
-  nur-ci-helper = let pkgs = ciHelperPkgs; in (pkgs.haskellPackages.override {
-    overrides = self: super: {
-      pangraph = pkgs.haskell.lib.overrideCabal super.pangraph (drv: {
-        version = "0.3.0";
-        # https://github.com/tuura/pangraph/pull/40
-        src = pkgs.fetchFromGitHub {
-          owner = "tuura";
-          repo = "pangraph";
-          rev = "e9cb33d9c50ec5980a7cc13d2fb8a67eca127274";
-          sha256 = "16qdclvdqmlycjrpm8hvp1142vz0m8v2f39ynhrppcabyz855bpr";
-        };
-        broken = false;
-      });
-    };
-  }).callPackage ./pkgs/tools/misc/nur-ci-helper { };
 
   psvimgtools = pkgs.callPackage ./pkgs/tools/misc/psvimgtools { };
   # TODO: needs arm-vita-eabi host
