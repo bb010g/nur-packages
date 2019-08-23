@@ -90,8 +90,8 @@ in rec {
   broca-unstable = pkgs.python3Packages.callPackage
     ./pkgs/applications/networking/p2p/broca { };
 
-  receptor-unstable = break (pkgs.callPackage
-    ./pkgs/applications/networking/p2p/receptor { });
+  receptor-unstable = pkgs.callPackage
+    ./pkgs/applications/networking/p2p/receptor { };
 
   # ## applications.version-management
 
