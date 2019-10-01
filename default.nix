@@ -11,8 +11,8 @@ let
   breakIf' = applyIf' break;
 
   min-cargo-vendor = "0.1.23";
-  packageOlder = p: v: versionOlder (pkgsLib.getVersion p) v;
-  cargoVendorTooOld = cargo-vendor: cargo-vendor != null && packageOlder cargo-vendor min-cargo-vendor;
+  packageOlder = p: v: v != null && versionOlder (pkgsLib.getVersion p) v;
+  cargoVendorTooOld = cargo-vendor: packageOlder cargo-vendor min-cargo-vendor;
   needsNewCargoVendor = p: breakIf' (cargoVendorTooOld p);
   needsNewCargoVendor' = needsNewCargoVendor (pkgs.cargo-vendor or null);
 
