@@ -201,19 +201,10 @@ in rec {
 
   gallery-dl = pkgs.callPackage ./pkgs/tools/misc/gallery-dl { };
 
-  lorri = lorri-rolling;
-
   psvimgtools = pkgs.callPackage ./pkgs/tools/misc/psvimgtools { };
   # TODO: needs arm-vita-eabi host
   # psvimgtools-dump_partials = pkgs.callPackage
   #   ./pkgs/tools/misc/psvimgtools/dump_partials.nix { };
-
-  # ### tools.misc.lorri
-
-  lorri-rolling = breakIf' (cargoVendorTooOld pkgs.cargo-vendor)
-    (pkgs.callPackage ./pkgs/tools/misc/lorri { }).result;
-  lorri-unstable = breakIf' (cargoVendorTooOld pkgs.cargo-vendor)
-    (pkgs.callPackage ./pkgs/tools/misc/lorri/unstable.nix { });
 
   # ## tools.networking
 
