@@ -12,9 +12,9 @@ let
 
   min-cargo-vendor = "0.1.23";
   packageOlder = p: v: versionOlder (pkgsLib.getVersion p) v;
-  cargoVendorTooOld = cargo-vendor: packageOlder cargo-vendor min-cargo-vendor;
+  cargoVendorTooOld = cargo-vendor: cargo-vendor != null && packageOlder cargo-vendor min-cargo-vendor;
   needsNewCargoVendor = p: breakIf' (cargoVendorTooOld p);
-  needsNewCargoVendor' = needsNewCargoVendor pkgs.cargo-vendor;
+  needsNewCargoVendor' = needsNewCargoVendor (pkgs.cargo-vendor or null);
 
   baseNameOf' = p: let p' = builtins.baseNameOf p; in
     if pkgsLib.isStorePath p then (builtins.substring 32 (-1) p') else p';
