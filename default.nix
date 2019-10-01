@@ -211,7 +211,7 @@ in rec {
   # ### tools.misc.lorri
 
   lorri-rolling = breakIf' (cargoVendorTooOld pkgs.cargo-vendor)
-    (pkgs.callPackage ./pkgs/tools/misc/lorri/rolling.nix { });
+    (pkgs.callPackage ./pkgs/tools/misc/lorri { }).result;
   lorri-unstable = breakIf' (cargoVendorTooOld pkgs.cargo-vendor)
     (pkgs.callPackage ./pkgs/tools/misc/lorri/unstable.nix { });
 

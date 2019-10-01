@@ -1,10 +1,6 @@
-{ callPackage, lib, fetchFromGitHub, ... } @ args:
+{ callPackage, lib, fetchFromGitHub }:
 
-let
-  generic = import ./generic.nix;
-  genericArgs = lib.attrNames (lib.functionArgs generic);
-  oArgs = lib.filterAttrs (a: _: lib.elem a genericArgs) args;
-in callPackage generic ({
+callPackage (lib.makeOverridable (import ./generic.nix) {
   version = "2019-08-20";
 
   # rolling-release branch
@@ -16,4 +12,4 @@ in callPackage generic ({
   };
 
   cargoSha256 = "1daff4plh7hwclfp21hkx4fiflh9r80y2c7k2sd3zm4lmpy0jpfz";
-} // oArgs)
+}) { }

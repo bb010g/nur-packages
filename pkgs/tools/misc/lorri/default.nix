@@ -1,27 +1,21 @@
-# for lib.makeOverridable
-{ pname ? "lorri", version
-, src, cargoSha256
-}:
-
-# for callPackage
-{ stdenv, rustPlatform, callPackage
+{ stdenv, rustPlatform, callPackage, fetchFromGitHub
 , darwin ? null, direnv, nix, which
 }:
 
 let
-  inherit (stdenv.lib) optionals;
-in rustPlatform.buildRustPackage rec {
-  inherit pname version;
+  inherit (stdenv) lib;
+in lib.makeOverridable (self: { result = rustPlatform.buildRustPackage rec {
+  inherit (self) pname version;
 
-  inherit src;
+  inherit (self) src;
 
-  inherit cargoSha256;
+  inherit (self) cargoSha256;
 
   buildInputs = [
     direnv
     nix
     which
-  ] ++ optionals stdenv.hostPlatform.isDarwin [
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
     darwin.cf-private
     darwin.security
     darwin.apple_sdk.frameworks.CoreServices
@@ -45,7 +39,7 @@ in rustPlatform.buildRustPackage rec {
       --no-out-link
   '';
 
-  meta = let inherit (stdenv) lib; in {
+  meta = {
     description = "Your project's nix-env";
     longDescription = ''
       lorri is a nix-shell replacement for project development. lorri is based
@@ -60,4 +54,17 @@ in rustPlatform.buildRustPackage rec {
     maintainers = let m = lib.maintainers; in [ m.bb010g ];
     platforms = lib.platforms.unix;
   };
+}; }) {
+  pname = "lorri";
+  version = "2019-08-20";
+
+  # rolling-release branch
+  src = fetchFromGitHub {
+    owner = "target";
+    repo = "lorri";
+    rev = "38eae3d487526ece9d1b8c9bb0d27fb45cf60816";
+    sha256 = "11k9lxg9cv6dlxj4haydvw4dhcfyszwvx7jx9p24jadqsy9jmbj4";
+  };
+
+  cargoSha256 = "1daff4plh7hwclfp21hkx4fiflh9r80y2c7k2sd3zm4lmpy0jpfz";
 }

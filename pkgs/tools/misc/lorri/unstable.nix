@@ -1,11 +1,5 @@
-{ callPackage, lib, fetchFromGitHub, ... } @ args:
-
-let
-  generic = import ./generic.nix;
-  genericArgs = lib.attrNames (lib.functionArgs generic);
-  oArgs = lib.filterAttrs (a: _: lib.elem a genericArgs) args;
-in callPackage generic ({
-  pname = "lorri-unstable";
+(import ./default.nix).override (o: {
+  pname = "${o.pname}-unstable";
   version = "2019-08-20";
 
   # master branch
@@ -17,4 +11,4 @@ in callPackage generic ({
   };
 
   cargoSha256 = "1daff4plh7hwclfp21hkx4fiflh9r80y2c7k2sd3zm4lmpy0jpfz";
-} // oArgs)
+}).result
