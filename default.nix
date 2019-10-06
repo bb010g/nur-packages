@@ -87,6 +87,9 @@ in rec {
 
   # ### applications.version-management.git-and-tools
 
+  git-my = pkgs.callPackage
+    ./pkgs/applications/version-management/git-and-tools/git-my { };
+
   git-revise = pkgs.python3Packages.callPackage
     ./pkgs/applications/version-management/git-and-tools/git-revise { };
 

@@ -1,4 +1,5 @@
 { stdenv, buildPythonApplication, fetchPypi
+, git
 }:
 
 buildPythonApplication rec {
@@ -11,6 +12,8 @@ buildPythonApplication rec {
   };
 
   outputs = [ "out" "man" ];
+
+  propagatedBuildInputs = [ git ];
 
   meta = let inherit (stdenv) lib; in {
     description = "Efficiently update, split, and rearrange git commits";
