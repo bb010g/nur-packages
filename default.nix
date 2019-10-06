@@ -15,11 +15,8 @@ let
   cargoVendorTooOld = cargo-vendor: packageOlder cargo-vendor min-cargo-vendor;
   needsNewCargoVendor = p: breakIf' (cargoVendorTooOld p);
   needsNewCargoVendor' = needsNewCargoVendor (pkgs.cargo-vendor or null);
-
-  baseNameOf' = p: let p' = builtins.baseNameOf p; in
-    if pkgsLib.isStorePath p then (builtins.substring 32 (-1) p') else p';
 in rec {
-  lib = import ./lib { inherit pkgs; }; # functions
+  lib = import ./lib { inherit pkgs lib; }; # functions
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
