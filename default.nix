@@ -93,6 +93,12 @@ in rec {
   git-revise = pkgs.python3Packages.callPackage
     ./pkgs/applications/version-management/git-and-tools/git-revise { };
 
+  # # data
+
+  # ## data.fonts
+
+  mutant-standard = pkgs.callPackage ./pkgs/data/fonts/mutant-standard { };
+
   # # development
 
   # ## development.libraries

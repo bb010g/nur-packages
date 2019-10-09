@@ -7,3 +7,7 @@ insert_final_newline = true
 charset = utf-8
 indent_size = 2
 indent_style = space
+
+[pkgs/data/fonts/*.conf]
+indent_size = 2
+indent_style = space
