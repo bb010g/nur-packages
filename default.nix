@@ -181,6 +181,8 @@ in rec {
 
   # ## development.tools
 
+  jq = pkgs.callPackage ./pkgs/development/tools/jq { };
+
   # ### development.tools.misc
 
   # pince = pkgs.callPackage ./pkgs/development/tools/misc/pince { };
