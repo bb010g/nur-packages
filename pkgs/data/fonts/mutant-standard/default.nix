@@ -1,11 +1,30 @@
-{ lib, fetchzip }:
+{ lib, stdenvNoCC, fetchzip }:
 
 let
   pname = "mutant-standard";
   version = "0.4.0";
 
   fcConf = "mutant-standard-emoji.conf";
-  fontconf-45 = builtins.toFile "45-${fcConf}" /*xml*/''
+
+  srcs = {
+    svginotSrc = fetchzip {
+      name = "mutant-standard-svginot-source";
+      url = "https://mutant.tech/dl/${version}/mtnt_${version}_font_svginot.zip";
+      sha256 = "1yhwllbfclwpdlx17glsw62gwhmhx1hvrx9pbgyfnqqjz2pxjaiy";
+    };
+    sbixotSrc = fetchzip {
+      name = "mutant-standard-sbixot-source";
+      url = "https://mutant.tech/dl/${version}/mtnt_${version}_font_sbixot.zip";
+      sha256 = "18if6c60mkb0scwxfn7djcvcqhfypbgrhi52hz0m3yxym452g05w";
+    };
+  };
+in
+stdenvNoCC.mkDerivation {
+  inherit pname version;
+
+  srcs = lib.attrValues srcs;
+
+  fontconf_45 = builtins.toFile "45-${fcConf}" /*xml*/''
 <?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
@@ -15,8 +34,7 @@ let
   </alias>
 </fontconfig>
 '';
-
-  fontconf-60 = builtins.toFile "60-${fcConf}" /*xml*/''
+  fontconf_60 = builtins.toFile "60-${fcConf}" /*xml*/''
 <?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
@@ -28,8 +46,7 @@ let
   </alias>
 </fontconfig>
 '';
-
-  fontconf-80 = builtins.toFile "80-${fcConf}" /*xml*/''
+  fontconf_80 = builtins.toFile "80-${fcConf}" /*xml*/''
 <?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
@@ -37,7 +54,7 @@ let
     <test name="family">
       <string>Mutant Standard emoji (SVGinOT)</string>
     </test>
-    <edit name="family" binding="same">
+    <edit name="family" mode="append" binding="same">
       <string>Mutant Standard emoji</string>
     </edit>
   </match>
@@ -45,7 +62,7 @@ let
     <test name="family">
       <string>Mutant Standard emoji (sbixOT)</string>
     </test>
-    <edit name="family" binding="same">
+    <edit name="family" mode="append" binding="same">
       <string>Mutant Standard emoji</string>
     </edit>
   </match>
@@ -64,26 +81,44 @@ let
 </fontconfig>
 '';
 
-in
-fetchzip {
-  name = "${pname}-${version}";
-  passthru.pname = pname;
-  passthru.version = version;
+  setSourceRoot = ''sourceRoot=$(pwd)'';
+  postUnpack = ''
+    mkdir src
+    for i in ./*-source; do
+      mv "$i" "src/''${i%-source}"
+    done
+  '';
 
-  url = "https://mutant.tech/dl/0.4.0/mtnt_0.4.0_font_svginot.zip";
-  sha256 = "040qczzpmc7lwwi63wldz6ixaf5ghk8ppd2xjaczhcjrppb0975v";
+  buildPhase = /*sh*/''
+    runHook preBuild
 
-  extraPostFetch = /*sh*/''
-    mv -fT "$out" "$unpackDir"
+    mkdir -p out/fonts
+    mv src/mutant-standard-svginot/font/mtnt_''${version}_SVGinOT.otf \
+      out/fonts/MutantStandardEmoji-SVGinOT.otf
 
-    mkdir -p "$out"/share/fonts/opentype
-    mv "$unpackDir"/font/mtnt_${version}_SVGinOT.otf \
-      "$out"/share/fonts/opentype/MutantStandardEmoji.otf
+    mkdir -p out/fonts/truetype
+    mv src/mutant-standard-sbixot/font/mtnt_''${version}_sbixOT.ttf \
+      out/fonts/MutantStandardEmoji-sbixOT.ttf
+
+    mkdir -p out/fontconfig
+    cp "$fontconf_45" out/fontconfig/45-${fcConf}
+    cp "$fontconf_60" out/fontconfig/60-${fcConf}
+    cp "$fontconf_80" out/fontconfig/80-${fcConf}
+    
+    runHook postBuild
+  '';
+
+  installPhase = /*sh*/''
+    runHook preInstall
+
+    mkdir -p "$out"/share/fonts/{opentype,truetype}
+    mv -t "$out"/share/fonts/opentype out/fonts/*.otf
+    mv -t "$out"/share/fonts/truetype out/fonts/*.ttf
 
     mkdir -p "$out"/etc/fonts/conf.d
-    cp ${lib.escapeShellArg fontconf-45} "$out"/etc/fonts/conf.d/45-${fcConf}
-    cp ${lib.escapeShellArg fontconf-60} "$out"/etc/fonts/conf.d/60-${fcConf}
-    cp ${lib.escapeShellArg fontconf-80} "$out"/etc/fonts/conf.d/80-${fcConf}
+    mv -t "$out"/etc/fonts/conf.d/ out/fontconfig/*.conf
+
+    runHook postInstall
   '';
 
   meta = {
