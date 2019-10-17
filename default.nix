@@ -22,6 +22,10 @@ in rec {
 
   # # applications
 
+  # ## applications.editors
+
+  edbrowse = pkgs.callPackage ./pkgs/applications/editors/edbrowse { };
+
   # ## applications.graphics
 
   xcolor = needsNewCargoVendor'
