@@ -1,16 +1,39 @@
 { stdenv, buildPackages, fetchFromGitHub
 , oniguruma
-, valgrind, which
+# installCheck inputs
+, python3 ? null
+# features
+, enableAsan ? false
+, enableUbsan ? false
+, enableValgrindChecks ? true
+, less ? null, valgrind ? null, which ? null
 }:
 
+assert enableAsan -> !enableValgrindChecks;
+assert enableValgrindChecks -> valgrind != null;
+assert enableValgrindChecks -> which != null;
+
+let
+  inherit (stdenv) lib;
+
+  # from ./docs/Pipfile{,.lock}
+  docsPythonPackages = ps: [
+    ps.jinja2
+    ps.lxml
+    ps.markdown
+    ps.pyyaml_3 or ps.pyyaml
+  ];
+  buildDocsPython = buildPackages.python3.withPackages docsPythonPackages;
+  docsPython = python3.withPackages docsPythonPackages;
+in
+
 stdenv.mkDerivation rec {
-  pname = "jq-dlopen-unstable";
-  version = "2019-07-09";
+  pname = "jq-unstable";
+  version = "2019-07-09+dlopen";
 
   src = fetchFromGitHub {
     owner = "nicowilliams";
     repo = "jq";
-    # dlopen branch, stedolan/jq#1843
     rev = "46b9d612af9e3822c43a70978c1d64b49a42bd07";
     sha256 = "10b022533qs15a8cvx6w64shl0n80mp2v14j29l6kinw7v4d0hgn";
   };
@@ -24,26 +47,25 @@ stdenv.mkDerivation rec {
     oniguruma
   ];
   installCheckInputs = [
+    docsPython
+  ] ++ lib.optionals enableValgrindChecks [
     valgrind
     which
   ];
 
-  postPatch = let
-    # from ./docs/Pipfile
-    docsPython = buildPackages.python3.withPackages (ps: [
-      ps.jinja2
-      ps.lxml
-      ps.markdown
-      ps.pyyaml_3 or ps.pyyaml
-    ]);
-  in ''
+  patches = [
+    ./nix-docs-python.patch
+    ./nix-version.patch
+  ];
+
+  postPatch = ''
+    for file in configure.ac scripts/version; do
+      substituteInPlace "$file" \
+        --subst-var version
+    done
+
     substituteInPlace Makefile.am \
-      --replace 'pipenv run python' ${docsPython}/bin/python
-
-    printf "%s\n" "echo ''${version@E}" > scripts/version
-
-    sed -i '/m4_define(\[jq_version\],/{N;N;N;s/.*/m4_define([jq_version], ['"$version"'])/}' \
-      configure.ac
+      --subst-var-by docs_python ${buildDocsPython}/bin/python
   '';
 
   configureFlags = [
@@ -51,19 +73,27 @@ stdenv.mkDerivation rec {
     "--sbindir=\${bin}/bin"
     "--datadir=\${doc}/share"
     "--mandir=\${man}/share/man"
+    (lib.enableFeature enableAsan "asan")
+    (lib.enableFeature enableUbsan "ubsan")
+    (lib.enableFeature enableValgrindChecks "valgrind")
   ] ++
     # jq is linked to libjq:
-    stdenv.lib.optional (!stdenv.isDarwin) "LDFLAGS=-Wl,-rpath,\\\${libdir}";
+    lib.optional (!stdenv.isDarwin) "LDFLAGS=-Wl,-rpath,\\\${libdir}";
 
   # jq is broken on dlopen
   doInstallCheck = false;
   installCheckTarget = "check";
 
+  preInstallCheck = ''
+    substituteInPlace tests/mantest \
+      --replace 'pipenv run python' 'python'
+  '';
+
   postInstallCheck = ''
     $bin/bin/jq --help >/dev/null
   '';
 
-  meta = let inherit (stdenv) lib; in {
+  meta = {
     description = ''A lightweight and flexible command-line JSON processor'';
     downloadPage = https://stedolan.github.io/jq/download/;
     homepage = https://stedolan.github.io/jq/;
@@ -73,4 +103,3 @@ stdenv.mkDerivation rec {
     updateWalker = true;
   };
 }
-
