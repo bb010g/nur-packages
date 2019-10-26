@@ -1,21 +1,23 @@
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -147,7 +147,7 @@
+@@ -141,9 +141,9 @@
+ ### Building the manpage
+ 
  man_MANS = jq.1
- if ENABLE_DOCS
- jq.1: $(srcdir)/docs/content/manual/manual.yml
+-if ENABLE_DOCS
++if ENABLE_DOCS
+-jq.1: $(srcdir)/docs/content/manual/manual.yml
++jq.1: $(srcdir)/docs/content/manual/manual.yml
 -	$(AM_V_GEN) ( cd ${abs_srcdir}/docs; pipenv run python build_manpage.py ) > $@ || { rm -f $@; false; }
 +	$(AM_V_GEN) ( cd ${abs_srcdir}/docs; @docs_python@ build_manpage.py ) > $@ || { rm -f $@; false; }
  jq.1.prebuilt: jq.1
- 	$(AM_V_GEN) cp $^ $@ || { rm -f $@; false; }
+ 	$(AM_V_GEN) cp jq.1 $@ || { rm -f $@; false; }
  else
- 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -90,30 +90,6 @@
-   AC_FIND_FUNC([dlopen], [dl], [#include <dlfcn.h>], [0, 0])
- fi
- 
+@@ -88,25 +88,1 @@
+-
++
 -AS_IF([test "x$enable_docs" = "xyes"],[
 -   AC_CHECK_PROGS(pipenv_cmd, pipenv)
 -
@@ -40,14 +42,11 @@
 -   fi
 -])
 -
- AM_CONDITIONAL([ENABLE_VALGRIND], [test "x$enable_valgrind" != xno])
- AM_CONDITIONAL([ENABLE_ASAN], [test "x$enable_asan" = xyes])
- AM_CONDITIONAL([ENABLE_UBSAN], [test "x$enable_ubsan" = xyes])
-@@ -282,7 +258,6 @@
+@@ -276,7 +252,6 @@
  AC_SUBST(onig_LDFLAGS)
  
  AM_CONDITIONAL([BUILD_ONIGURUMA], [test "x$build_oniguruma" = xyes])
 -AC_SUBST([BUNDLER], ["$bundle_cmd"])
  
  AC_CONFIG_MACRO_DIR([config/m4])
- AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([Makefile libjq.pc])

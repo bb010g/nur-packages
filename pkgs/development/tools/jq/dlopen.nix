@@ -29,13 +29,13 @@ in
 
 stdenv.mkDerivation rec {
   pname = "jq-unstable";
-  version = "2019-10-24";
+  version = "2019-07-09+dlopen";
 
   src = fetchFromGitHub {
     owner = "nicowilliams";
     repo = "jq";
-    rev = "bda75c3142d969e2a52301a1eaead0cc05ec2c13";
-    sha256 = "12nlwl9s5yjy0ggmpjcrfz4cirvizv57xv45bc7sriymm1j5alaj";
+    rev = "46b9d612af9e3822c43a70978c1d64b49a42bd07";
+    sha256 = "10b022533qs15a8cvx6w64shl0n80mp2v14j29l6kinw7v4d0hgn";
   };
 
   outputs = [ "bin" "doc" "man" "dev" "lib" "out" ];

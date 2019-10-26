@@ -176,6 +176,8 @@ in {
 
   jq = callPackage ../development/tools/jq { };
 
+  jq-dlopen = callPackage ../development/tools/jq/dlopen.nix { };
+
   # ### development.tools.misc
 
   # pince = callPackage ../development/tools/misc/pince { };
