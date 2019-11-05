@@ -78,7 +78,7 @@ in {
 
   # ## applications.networking
 
-  ipscan = (callPackage ../applications/networking/ipscan {
+  ${null/*ipscan*/} = (callPackage ../applications/networking/ipscan {
     swt = self.swt_4_6;
   }).overrideAttrs (o: {
     meta = if !(self.swt_4_6.meta.broken or false) then o.meta else
@@ -111,7 +111,7 @@ in {
 
   # ### development.libraries.java
 
-  swt_4_6 = swt.overrideAttrs (o: let
+  ${null/*swt_4_6*/} = swt.overrideAttrs (o: let
     platformMap = {
       "x86_64-linux" =
         { platform = "gtk-linux-x86_64";
