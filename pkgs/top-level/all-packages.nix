@@ -1,5 +1,6 @@
 { buildPackages, lib, newScope, recurseIntoAttrs
-, fetchFromGitHub, fetchgit, fetchzip, libsForQt5, mosh, path, st, stdenv, swt
+, fetchFromGitHub, fetchgit, fetchzip, gtk3, libsForQt5, mosh, path, st
+, stdenv, swt
 , cargo-vendor ? null
 }:
 lib.makeScope newScope (self: let inherit (self) callPackage; in
@@ -84,6 +85,12 @@ in {
     meta = if !(self.swt_4_6.meta.broken or false) then o.meta else
       o.meta // { broken = true; };
   });
+
+  # ### applications.networking.browsers
+
+  surf-unstable = callPackage ../applications/networking/browsers/surf {
+    gtk = gtk3;
+  };
 
   # ### applications.networking.p2p
 
