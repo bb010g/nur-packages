@@ -1,5 +1,6 @@
 { buildPackages, lib, newScope, recurseIntoAttrs
-, fetchFromGitHub, fetchgit, fetchzip, gtk3, libsForQt5, mosh, path, st
+, fetchFromGitHub, fetchgit, fetchzip, gtk3, libsForQt5, mosh, path
+, python3Packages, python36Packages, st
 , stdenv, swt
 , cargo-vendor ? null
 }:
@@ -21,10 +22,8 @@ let
   needsNewCargoVendor' = needsNewCargoVendor cargo-vendor;
 
   withPyPkgs = pkgs: pkgs.overrideScope' self.pythonPkgsScope;
-  python3Packages = callPackage ({ python3Packages }:
-    withPyPkgs python3Packages) { };
-  python36Packages = callPackage ({ python36Packages }:
-    withPyPkgs python36Packages) { };
+  python3Packages' = withPyPkgs python3Packages;
+  python36Packages' = withPyPkgs python36Packages;
 in {
   # # applications
 
@@ -94,7 +93,7 @@ in {
 
   # ### applications.networking.p2p
 
-  broca-unstable = python3Packages.callPackage
+  broca-unstable = python3Packages'.callPackage
     ../applications/networking/p2p/broca { };
 
   receptor-unstable = callPackage ../applications/networking/p2p/receptor { };
@@ -177,7 +176,7 @@ in {
 
   # ## development.python-modules
 
-  wpull = python36Packages.toPythonApplication python36Packages.wpull;
+  wpull = python36Packages'.toPythonApplication python36Packages'.wpull;
 
   # ## development.tools
 
@@ -249,7 +248,7 @@ in {
 
   dwdiff = callPackage ../tools/text/dwdiff { };
 
-  ydiff = python3Packages.callPackage ../tools/text/ydiff { };
+  ydiff = python3Packages'.callPackage ../tools/text/ydiff { };
 
   # # top-level
 
