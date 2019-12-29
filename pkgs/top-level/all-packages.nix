@@ -100,8 +100,6 @@ in {
   broca-unstable = python3Packages'.callPackage
     ../applications/networking/p2p/broca { };
 
-  receptor-unstable = callPackage ../applications/networking/p2p/receptor { };
-
   # ## applications.version-management
 
   # ### applications.version-management
