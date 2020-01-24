@@ -1,13 +1,27 @@
 lib: libSuper:
 
 let
-  inherit (builtins) getAttr hasAttr mapAttrs;
-  mergeModule = name: module:
-    if hasAttr name libSuper then
-      (getAttr name libSuper) // module
-    else module;
-  callLib = file: import file lib libSuper;
-in let modules = {
+  inherit (builtins) isAttrs mapAttrs typeOf;
+  mergeConst = merge: x: y:
+    y;
+  mergeAttrs = merge: x: y:
+    x // (mapAttrs (n: yV: if x ? ${n} then merge x.${n} yV else yV) y);
+  merge' = merge: x: y:
+    let xTy = typeOf x; yTy = typeOf y; in
+    if xTy != yTy
+      then merge x y
+    else if xTy == "set"
+      then mergeAttrs merge x y
+    else
+      merge x y;
+  merge_0 = mergeConst merge_0;
+  merge_1 = merge' merge_0;
+  merge_2 = merge' merge_1;
+  libMerged = merge_2 libSuper lib;
+  callLib = file: import file libMerged libSuper;
+in let exports = {
+
+  ## modules
 
   attrsets = callLib ./attrsets.nix;
   # edn = import ./edn;
@@ -16,7 +30,7 @@ in let modules = {
   trivial = callLib ./trivial.nix;
   # utf8 = import ./utf-8;
 
-}; in (mapAttrs mergeModule modules) // {
+  ## top-level
 
   inherit (lib.attrsets)
     mapAttr
@@ -43,4 +57,4 @@ in let modules = {
     mapIf
   ;
 
-}
+}; in exports
