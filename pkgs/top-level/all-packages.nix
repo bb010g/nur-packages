@@ -179,6 +179,10 @@ in {
 
   # ## development.tools
 
+  heirloom-devtools = callPackage ../development/tools/heirloom-devtools {
+    stdenv = pkgs.clangStdenv;
+  };
+
   jq = callPackage ../development/tools/jq { };
 
   jq-dlopen = callPackage ../development/tools/jq/dlopen.nix { };
@@ -190,6 +194,10 @@ in {
   # servers
 
   ttyd = callPackage ../servers/ttyd { };
+
+  # shells
+
+  heirloom-sh = callPackage ../shells/heirloom-sh { };
 
   # # tools
 
@@ -211,6 +219,8 @@ in {
   # ## tools.misc
 
   gallery-dl = callPackage ../tools/misc/gallery-dl { };
+
+  heirloom = callPackage ../tools/misc/heirloom-toolchest { };
 
   psvimgtools = callPackage ../tools/misc/psvimgtools { };
   # TODO: needs arm-vita-eabi host
