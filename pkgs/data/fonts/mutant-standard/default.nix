@@ -2,20 +2,15 @@
 
 let
   pname = "mutant-standard";
-  version = "0.4.0";
+  version = "0.4.1";
 
   fcConf = "mutant-standard-emoji.conf";
 
   srcs = {
-    svginotSrc = fetchzip {
-      name = "mutant-standard-svginot-source";
-      url = "https://mutant.tech/dl/${version}/mtnt_${version}_font_svginot.zip";
-      sha256 = "1yhwllbfclwpdlx17glsw62gwhmhx1hvrx9pbgyfnqqjz2pxjaiy";
-    };
     sbixotSrc = fetchzip {
-      name = "mutant-standard-sbixot-source";
+      name = "mutant-standard-${version}-sbixot-source";
       url = "https://mutant.tech/dl/${version}/mtnt_${version}_font_sbixot.zip";
-      sha256 = "18if6c60mkb0scwxfn7djcvcqhfypbgrhi52hz0m3yxym452g05w";
+      sha256 = "111ld1bxydca8xfgmjm883s04l8d0l45p8l6x86jyy8wnf1085nl";
     };
   };
 in
@@ -52,14 +47,6 @@ stdenvNoCC.mkDerivation {
 <fontconfig>
   <match target="scan">
     <test name="family">
-      <string>Mutant Standard emoji (SVGinOT)</string>
-    </test>
-    <edit name="family" mode="append" binding="same">
-      <string>Mutant Standard emoji</string>
-    </edit>
-  </match>
-  <match target="scan">
-    <test name="family">
       <string>Mutant Standard emoji (sbixOT)</string>
     </test>
     <edit name="family" mode="append" binding="same">
@@ -93,12 +80,8 @@ stdenvNoCC.mkDerivation {
     runHook preBuild
 
     mkdir -p out/fonts
-    mv src/mutant-standard-svginot/font/mtnt_''${version}_SVGinOT.otf \
-      out/fonts/MutantStandardEmoji-SVGinOT.otf
-
-    mkdir -p out/fonts/truetype
-    mv src/mutant-standard-sbixot/font/mtnt_''${version}_sbixOT.ttf \
-      out/fonts/MutantStandardEmoji-sbixOT.ttf
+    mv src/mutant-standard-''${version}-sbixot/font/MutantStandardEmoji-sbixOT.ttf \
+      out/fonts/MutantStandardEmoji-sbixot.ttf
 
     mkdir -p out/fontconfig
     cp "$fontconf_45" out/fontconfig/45-${fcConf}
@@ -111,8 +94,9 @@ stdenvNoCC.mkDerivation {
   installPhase = /*sh*/''
     runHook preInstall
 
-    mkdir -p "$out"/share/fonts/{opentype,truetype}
-    mv -t "$out"/share/fonts/opentype out/fonts/*.otf
+    # mkdir -p "$out"/share/fonts/opentype
+    # mv -t "$out"/share/fonts/opentype out/fonts/*.otf
+    mkdir -p "$out"/share/fonts/truetype
     mv -t "$out"/share/fonts/truetype out/fonts/*.ttf
 
     mkdir -p "$out"/etc/fonts/conf.d
