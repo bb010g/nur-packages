@@ -19,7 +19,7 @@ let
   inherit (stdenv.cc) isClang;
   asanDefaultOptsC = writeText "asan-default-options.c" ''
     #include <sanitizer/asan_interface.h>
-    
+
     #ifdef __cplusplus
     extern "C" {
     extern const char *__asan_default_options() {
