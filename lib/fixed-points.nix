@@ -13,10 +13,10 @@ in {
 
   # composeExtensionList {{{2
   composeExtensionList =
-    fs:
-    if fs == [ ]
+    exts:
+    if exts == [ ]
       then (self: super: { })
-      else foldl1' composeExtensions fs;
+      else foldl1' composeExtensions exts;
 
   #}}}1
 

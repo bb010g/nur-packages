@@ -177,7 +177,7 @@ in {
   # development.tools {{{2
 
   heirloom-devtools = callPackage ../development/tools/heirloom-devtools {
-    stdenv = pkgs.clangStdenv;
+    # stdenv = pkgs.clangStdenv;
   };
 
   jq = callPackage ../development/tools/jq { };
@@ -221,7 +221,7 @@ in {
 
   gallery-dl = callPackage ../tools/misc/gallery-dl { };
 
-  heirloom = callPackage ../tools/misc/heirloom-toolchest { };
+  # heirloom = callPackage ../tools/misc/heirloom-toolchest { };
 
   psvimgtools = callPackage ../tools/misc/psvimgtools { };
   # TODO: needs arm-vita-eabi host

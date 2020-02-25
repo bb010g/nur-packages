@@ -2,9 +2,9 @@
 , bash, heirloom-sh
 , llvmPackages ? null
 , shell ? "${heirloom-sh}/bin/sh", posixShell ? "${bash}/bin/sh"
-, enableAsan ? !enableMsan, asanDefaultOpts ? "detect_leaks=false"
+, enableAsan ? false /* !enableMsan */, asanDefaultOpts ? "detect_leaks=false"
 , enableFramePointer ? enableMsan
-, enableMsan ? stdenv.cc.isClang or false
+, enableMsan ? false /* stdenv.cc.isClang or false */
 , enableMsanTrackOrigins ? true
 , enablePIE ? enableMsan
 }:
@@ -48,6 +48,7 @@ in stdenv.mkDerivation rec {
     ./relative-symbolic-links.patch
     ./format-security.patch
     ./pass-san.patch
+    ./linux-no-stropts.patch
   ];
 
   outputs = [ "out" "lib" "man" ];

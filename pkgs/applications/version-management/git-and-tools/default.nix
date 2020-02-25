@@ -11,5 +11,5 @@ lib.makeScope newScope (self: let inherit (self) callPackage; in
 
   git-revise = python3Packages.callPackage ./git-revise { };
 
-  githooks = callPackage ./githooks { };
+  # githooks = callPackage ./githooks { };
 })
