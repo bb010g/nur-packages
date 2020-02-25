@@ -32,17 +32,7 @@ stdenv.mkDerivation rec {
   meta = with stdenv.lib; {
     description = "A portable variant of the traditional Unix shell";
     homepage = http://heirloom.sourceforge.net/sh.html;
-    license = with licenses; let
-      spdx = lic: lic // {
-        url = "http://spdx.org/licenses/${lic.spdxId}.html";
-      };
-    in let
-      caldera = spdx {
-        shortname = "caldera";
-        spdxId = "Caldera";
-        fullName = "Caldera License";
-      };
-    in [ zlib ccdl caldera ];
+    license = with licenses; [ zlib ccdl10 caldera ];
     maintainers = with maintainers; [ bb010g ];
     platforms = platforms.all;
   };

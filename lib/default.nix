@@ -3,6 +3,7 @@ import ./default-boilerplate.nix {
     attrsets = import ./attrsets.nix;
     # edn = import ./edn;
     fixedPoints = import ./fixed-points.nix;
+    licenses = import ./licenses.nix;
     lists = import ./lists.nix;
     meta = import ./meta.nix;
     trivial = import ./trivial.nix;

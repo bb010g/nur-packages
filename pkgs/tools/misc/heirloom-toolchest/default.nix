@@ -91,27 +91,7 @@ stdenv.mkDerivation rec {
       "The Heirloom Toolchest collection of standard Unix utilities";
     homepage = http://heirloom.sourceforge.net/tools.html;
     # ordered to follow /LICENSE/LICENSE
-    license = with licenses; let
-      spdx = lic: lic // {
-        url = "http://spdx.org/licenses/${lic.spdxId}.html";
-      };
-    in let
-      bsdOriginalUC = spdx {
-        shortname = "bsdOriginalUC";
-        spdxId = "BSD-4-Clause-UC";
-        fullName = ''BSD-4-Clause (University of California-Specific)'';
-      };
-      caldera = spdx {
-        shortname = "caldera";
-        spdxId = "Caldera";
-        fullName = "Caldera License";
-      };
-      infozip = spdx {
-        shortname = "infozip";
-        spdxId = "Info-ZIP";
-        fullName = "Info-ZIP License";
-      };
-    in [
+    license = with licenses; [
       zlib # newly written code & changes to existing code
       caldera # Unix 6th Edition, Unix 7th Edition, & Unix 32V
       bsdOriginalUC # 4BSD

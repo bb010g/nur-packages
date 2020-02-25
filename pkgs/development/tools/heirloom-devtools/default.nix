@@ -154,22 +154,7 @@ in stdenv.mkDerivation rec {
     description =
       "A stable base for compiling other components of the Heirloom Project";
     homepage = http://heirloom.sourceforge.net/tools.html;
-    license = with licenses; let
-      spdx = lic: lic // {
-        url = "http://spdx.org/licenses/${lic.spdxId}.html";
-      };
-    in let
-      bsdOriginalUC = spdx {
-        shortname = "bsdOriginalUC";
-        spdxId = "BSD-4-Clause-UC";
-        fullName = ''BSD-4-Clause (University of California-Specific)'';
-      };
-      caldera = spdx {
-        shortname = "caldera";
-        spdxId = "Caldera";
-        fullName = "Caldera License";
-      };
-    in [ bsdOriginalUC caldera ccdl ];
+    license = with licenses; [ bsdOriginalUC caldera ccdl10 ];
     maintainers = with maintainers; [ bb010g ];
     platforms = platforms.all;
   };
