@@ -1,5 +1,5 @@
 import ./default-boilerplate.nix {
-  modules = {
+  modules = { #{{{1
     attrsets = import ./attrsets.nix;
     # edn = import ./edn;
     fixedPoints = import ./fixed-points.nix;
@@ -7,23 +7,23 @@ import ./default-boilerplate.nix {
     trivial = import ./trivial.nix;
     # utf8 = import ./utf-8;
   };
-  reexports = { lib, libSuper }: {
-    inherit (lib.attrsets)
+  reexports = { lib, libSuper }: { #{{{1
+    inherit (lib.attrsets) #{{{2
       mapAttr
       mapAttr'
       mapAttrOr mapAttrOrElse
       mapOptionalAttr
     ;
 
-    inherit (lib.fixedPoints)
+    inherit (lib.fixedPoints) #{{{2
       composeExtensionList
     ;
 
-    inherit (lib.lists)
+    inherit (lib.lists) #{{{2
       foldl1'
     ;
 
-    inherit (lib.trivial)
+    inherit (lib.trivial) #{{{2
       apply applyOp
       comp compOp flow
       comp2 comp2Op flow2
@@ -32,5 +32,8 @@ import ./default-boilerplate.nix {
       mapFunctionArgs
       mapIf
     ;
+    #}}}2
   };
+  #}}}1
 }
+# vim:fdm=marker:fdl=1
