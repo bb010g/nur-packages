@@ -48,9 +48,9 @@ in {
   })).override {
     conf = pkgs.lib.readFile ../applications/misc/st/config.h;
     patches = [
-      ../applications/misc/st/bold-is-not-bright.diff
-      ../applications/misc/st/scrollback.diff
-      ../applications/misc/st/vertcenter.diff
+      ../applications/misc/st/bold-is-not-bright.patch
+      ../applications/misc/st/scrollback.patch
+      ../applications/misc/st/vertcenter.patch
     ];
   };
 
