@@ -4,6 +4,7 @@ import ./default-boilerplate.nix {
     # edn = import ./edn;
     fixedPoints = import ./fixed-points.nix;
     lists = import ./lists.nix;
+    meta = import ./meta.nix;
     trivial = import ./trivial.nix;
     # utf8 = import ./utf-8;
   };
@@ -21,6 +22,11 @@ import ./default-boilerplate.nix {
 
     inherit (lib.lists) #{{{2
       foldl1'
+    ;
+
+    inherit (lib.meta) #{{{2
+      addMetaAttrs'
+      setDrvBroken breakDrv unbreakDrv
     ;
 
     inherit (lib.trivial) #{{{2
