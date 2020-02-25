@@ -47,7 +47,10 @@ pythonPkgsScoped = pkgs: super: {
 allPackages = import ./top-level/all-packages.nix;
 
 in let p = pkgs'; pkgs' = pkgs.appendOverlays [
-  (pkgs: super: { lib = super.lib.extend libExtension; })
+  (pkgs: super: {
+    lib = super.lib.extend libExtension;
+    stdenv = super.stdenv // { lib = pkgs.lib; };
+  })
   pythonPkgsScoped
   (pkgs: super: {
     pythonPackagesScope = import ./top-level/python-packages.nix;
