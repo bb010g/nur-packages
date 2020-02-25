@@ -64,18 +64,7 @@ in {
       sha256 = "0620yr9s148hdrl7qr83xcklabk1hc4n4abnnfj9wlxrcimx3qam";
     };
   })).override {
-    libXft = pkgs.xorg.libXft.overrideAttrs (o: {
-      patches = o.patches or [] ++ [
-        (pkgs.fetchpatch {
-          # http://git.suckless.org/st/commit/caa1d8fbea2b92bca24652af0fee874bdbbbb3e5.html
-          # https://gitlab.freedesktop.org/xorg/lib/libxft/issues/6
-          # https://gitlab.freedesktop.org/xorg/lib/libxft/merge_requests/1
-          url = "https://gitlab.freedesktop.org/xorg/lib/libxft/commit/" +
-            "fe41537b5714a2301808eed2d76b2e7631176573.patch";
-          sha256 = "045lp1q50i2wlwvpsq6ycxdc6p3asm2r3bk2nbad1dwkqw2xf9jc";
-        })
-      ];
-    });
+    inherit (self) libXft;
   };
 
   # applications.networking {{{2
@@ -195,6 +184,24 @@ in {
   # servers {{{1
 
   ttyd = callPackage ../servers/ttyd { };
+
+  # servers.x11 {{{2
+  # servers.x11.xorg {{{3
+
+  libXft = callPackage ({ lib, libXft, fetchpatch }: libXft.overrideAttrs (o: {
+    patches = lib.filter (patch: !(lib.elem patch.name [
+      "fe41537b5714a2301808eed2d76b2e7631176573.patch"
+    ])) (o.patches or []) ++ [
+      (fetchpatch {
+        # http://git.suckless.org/st/commit/caa1d8fbea2b92bca24652af0fee874bdbbbb3e5.html
+        # https://gitlab.freedesktop.org/xorg/lib/libxft/issues/6
+        # https://gitlab.freedesktop.org/xorg/lib/libxft/merge_requests/1
+        url = "https://gitlab.freedesktop.org/xorg/lib/libxft/commit/" +
+          "fe41537b5714a2301808eed2d76b2e7631176573.patch";
+        sha256 = "045lp1q50i2wlwvpsq6ycxdc6p3asm2r3bk2nbad1dwkqw2xf9jc";
+      })
+    ];
+  })) { libXft = pkgs.xorg.libXft; };
 
   # shells {{{1
 
