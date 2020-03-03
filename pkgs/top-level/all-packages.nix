@@ -100,6 +100,10 @@ in {
 
   # development {{{1
   # development.libraries {{{2
+
+  gdtoa-desktop = self.gdtoa-desktop-unstable;
+  gdtoa-desktop-unstable = callPackage ../development/libraries/gdtoa-desktop { };
+
   # development.libraries.java {{{3
 
   ${null/*swt_4_6*/} = pkgs.swt.overrideAttrs (o: let
