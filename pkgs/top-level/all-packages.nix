@@ -1,6 +1,7 @@
 self: pkgs:
 
 let inherit (self) callPackage; in let
+  inherit (pkgs) lib recurseIntoAttrs;
   inherit (pkgs.lib) breakDrv getVersion mapIf versionAtLeast;
 
   cargoHashBreakageVersion = "1.39.0";
@@ -89,7 +90,7 @@ in {
 
   # applications.version-management {{{2
 
-  gitAndTools = pkgs.recurseIntoAttrs
+  gitAndTools = recurseIntoAttrs
     (callPackage ../applications/version-management/git-and-tools { });
 
   # data {{{1
