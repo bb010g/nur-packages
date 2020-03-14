@@ -271,6 +271,18 @@ in {
 
   ydiff = pkgs.python3Packages.callPackage ../tools/text/ydiff { };
 
+  # tools.typesetting {{{2
+  # tools.typesetting.tex {{{3
+
+  texlive = let tl = pkgs.texlive; in tl // {
+    combine = callPackage ../tools/typesetting/tex/texlive/combine.nix {
+      inherit (tl) bin;
+      combinePkgs = pkgSet: lib.concatLists
+        (lib.mapAttrsToList (_n: a: a.pkgs) pkgSet);
+      ghostscript = pkgs.ghostscriptX;
+    };
+  };
+
   # }}}1
 
 }
