@@ -15,6 +15,8 @@ in {
   # applications {{{1
   # applications.editors {{{2
 
+  _010-editor = callPackage ../applications/editors/010-editor { };
+
   edbrowse = callPackage ../applications/editors/edbrowse { };
 
   # applications.graphics {{{2
