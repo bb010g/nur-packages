@@ -248,12 +248,12 @@ in {
   mosh-unstable = pkgs.mosh.overrideAttrs (o: rec {
     name = "${pname}-${version}";
     pname = "mosh-unstable";
-    version = "2019-06-13";
+    version = "2019-10-02";
     src = pkgs.fetchFromGitHub {
       owner = "mobile-shell";
       repo = "mosh";
-      rev = "335e3869b7af59314255a121ec7ed0f6309b06e7";
-      sha256 = "0h42grx0sdxix9x9ph800szddwmbxxy7nnzmfnpldkm6ar6i6ws2";
+      rev = "0cc492dbae2f6aaef9a54dc2a8ba3222868b150f";
+      sha256 = "0w7jxdsyxgnf5h09rm8mfgm5z1qc1sqwvgzvrwzb04yshxpsg0zd";
     };
     patches = let go =
       let pkgsMosh = "${toString pkgs.path}/pkgs/tools/networking/mosh"; in
