@@ -13,6 +13,11 @@ let inherit (self) callPackage; in let
 in {
 
   # applications {{{1
+  # applications.audio {{{2
+
+  sayonara-unstable = (pkgs.libsForQt5.overrideScope' (_: _: self))
+    .callPackage ../applications/audio/sayonara/unstable.nix { };
+
   # applications.editors {{{2
 
   _010-editor = callPackage ../applications/editors/010-editor { };
