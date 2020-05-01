@@ -1,7 +1,7 @@
 self: pkgs:
 
 let inherit (self) callPackage; in let
-  inherit (pkgs) lib recurseIntoAttrs;
+  inherit (pkgs) lib recurseIntoAttrs dontRecurseIntoAttrs;
   inherit (pkgs.lib) breakDrv getVersion mapIf versionAtLeast;
 
   cargoHashBreakageVersion = "1.39.0";
@@ -303,14 +303,14 @@ in {
   # tools.typesetting {{{2
   # tools.typesetting.tex {{{3
 
-  texlive = let tl = pkgs.texlive; in tl // {
+  texlive = let tl = pkgs.texlive; in dontRecurseIntoAttrs (tl // {
     combine = callPackage ../tools/typesetting/tex/texlive/combine.nix {
       inherit (tl) bin;
       combinePkgs = pkgSet: lib.concatLists
         (lib.mapAttrsToList (_n: a: a.pkgs) pkgSet);
       ghostscript = pkgs.ghostscriptX;
     };
-  };
+  });
 
   # }}}1
 
