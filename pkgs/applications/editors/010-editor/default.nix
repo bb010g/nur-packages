@@ -24,8 +24,12 @@ let
 in stdenv.mkDerivation {
   inherit pname version;
 
-  src = fetchzip {
-    url = "https://www.sweetscape.com/download/010EditorLinux64Installer.tar.gz";
+  src = let
+    # v = lib.replaceStrings [ "." ] [ "" ] version;
+    v = version;
+  in fetchzip {
+    url =
+      "https://download.sweetscape.com/010EditorLinux64Installer${v}.tar.gz";
     stripRoot = false;
     sha256 = "0gzif81wdq1cvhkikaymv9nb67bsfvnfkhw6zfprsnripkamijym";
   };
