@@ -219,6 +219,7 @@ in {
 
   lz4json = callPackage ../tools/compression/lz4json { };
 
+  # 19.09 compat (breaks on 20.03)
   mozlz4-tool = needsOldCargoHash
     (callPackage ../tools/compression/mozlz4-tool { });
 
@@ -254,12 +255,21 @@ in {
       rev = "335e3869b7af59314255a121ec7ed0f6309b06e7";
       sha256 = "0h42grx0sdxix9x9ph800szddwmbxxy7nnzmfnpldkm6ar6i6ws2";
     };
-    patches = let
-      moshPatch = n:
-        /. + "${toString pkgs.path}/pkgs/tools/networking/mosh/${n}.patch";
-    in [
-      (moshPatch "ssh_path")
-      (moshPatch "utempter_path")
+    patches = let go =
+      let pkgsMosh = "${toString pkgs.path}/pkgs/tools/networking/mosh"; in
+      { patch ? null, moshPatch ? null, optional ? false } @ args:
+      if moshPatch != null then
+        assert patch == null; go (args // {
+          moshPatch = null;
+          patch = /. + "${pkgsMosh}/${moshPatch}";
+        })
+      else
+        if optional && !(builtins.pathExists patch) then [ ] else [ patch ]
+    ; in lib.concatMap go [
+      { moshPatch = "ssh_path.patch"; }
+      { moshPatch = "utempter_path.patch"; }
+      # 19.09 compat
+      { moshPatch = "bash_completion_datadir.patch"; optional = true; }
     ];
   });
 
