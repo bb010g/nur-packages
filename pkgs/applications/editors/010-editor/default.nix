@@ -4,7 +4,7 @@
 
 let
   pname = "010-editor";
-  version = "10.0.1";
+  version = "10.0.2";
   description =
     "Professional text and hex editing with Binary Templates technology";
 
@@ -31,7 +31,7 @@ in stdenv.mkDerivation {
     url =
       "https://download.sweetscape.com/010EditorLinux64Installer${v}.tar.gz";
     stripRoot = false;
-    sha256 = "0gzif81wdq1cvhkikaymv9nb67bsfvnfkhw6zfprsnripkamijym";
+    sha256 = "03lj0cq5wl8z00g37d3zpyf1nf838ra04sbwx4dp3hsabzc2wzy5";
   };
 
   buildInputs = builtins.map lib.getLib [
