@@ -34,7 +34,11 @@ stdenv.mkDerivation {
     webkitgtk
   ];
 
-  inherit patches;
+  patches = let defaultPatches = [
+    ./update-uri.patch
+  ]; in if patches == null then defaultPatches
+    else if lib.isFunction patches then patches defaultPatches
+    else defaultPatches ++ patches;
 
   installFlags = [ "PREFIX=$(out)" ];
 
