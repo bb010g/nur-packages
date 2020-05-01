@@ -191,6 +191,18 @@ in {
 
   # development.tools.misc {{{3
 
+  edb-debugger = (pkgs.libsForQt5.overrideScope' (_: _: self))
+    .callPackage ../development/tools/misc/edb-debugger {
+      buildPackages =
+        (pkgs.buildPackages.libsForQt5.overrideScope' (_: _: self))
+          .callPackage ({
+            cmake, pkgconfig
+          } @ args: args) { };
+      gdtoa-desktop = self.gdtoa-desktop.override {
+        enableRenamedFunctions = true;
+      };
+    };
+
   # pince = callPackage ../development/tools/misc/pince { };
 
   # servers {{{1
