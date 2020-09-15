@@ -31,7 +31,8 @@ stdenv.mkDerivation {
   ];
 
   patches = let defaultPatches = [
-    ./update-uri.patch
+    ./bb010g-basic-fixes.patch
+    ./bb010g-advanced-fixes.patch
   ]; in if patches == null then defaultPatches
     else if lib.isFunction patches then patches defaultPatches
     else defaultPatches ++ patches;
