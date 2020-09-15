@@ -1,4 +1,4 @@
-{ stdenv, fetchgit
+{ lib, stdenv, fetchgit
 , pkgconfig, wrapGAppsHook
 , gcr, glib, glib-networking, gsettings-desktop-schemas, gtk, libsoup
 , webkitgtk
@@ -6,16 +6,12 @@
 , patches ? null
 }:
 
-let
-  inherit (stdenv) lib;
-in
 stdenv.mkDerivation {
   pname = "surf-unstable";
   version = "2019-02-08";
 
   src = fetchgit {
     url = "https://git.suckless.org/surf";
-    # rev = "master";
     rev = "d068a3878b6b9f2841a49cd7948cdf9d62b55585";
     sha256 = "0pjsv2q8c74sdmqsalym8wa2lv55lj4pd36miam5wd12769xw68m";
   };
@@ -40,7 +36,15 @@ stdenv.mkDerivation {
     else if lib.isFunction patches then patches defaultPatches
     else defaultPatches ++ patches;
 
-  installFlags = [ "PREFIX=$(out)" ];
+  configurePhase = ''
+    runHook preConfigure
+
+    substituteInPlace ./config.mk \
+      --replace 'PREFIX = /usr/local' "PREFIX = ''${!outputBin}"
+      #
+
+    runHook postConfigure
+  '';
 
   # Add run-time dependencies to PATH. Append them to PATH so the user can
   # override the dependencies with their own PATH.
