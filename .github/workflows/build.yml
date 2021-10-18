@@ -20,7 +20,7 @@ jobs:
         - { name: 'Build with nixos-20.03', os: 'ubuntu-latest', nix-path: 'nixpkgs=channel:nixos-20.03' }
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - uses: cachix/install-nix-action@v13
       with: { nix_path: '${{ matrix.nix-path }}' }
     - uses: cachix/cachix-action@v10
